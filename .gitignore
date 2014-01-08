@@ -1,0 +1,14 @@
+*/x64/
+*/Release/*
+*/Win32/*
+*/*.s
+*_ocl
+*_cuda
+*sdf
+*suo
+*/OpenCL
+*/CUDA
+*ncb
+*ipch
+*/*sln
+*/*proj
