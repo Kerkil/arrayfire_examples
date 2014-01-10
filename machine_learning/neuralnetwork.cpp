@@ -185,7 +185,7 @@ int ann_demo(bool console)
     ann network(num_layers, layers);
 
     // Train network
-    network.train(test_input_vec, test_target, 0.5, 500, 1, true);
+    network.train(train_input_vec, train_target, 0.5, 500, 1, true);
 
     // Run the trained network and test accuracy.
     array train_output = network.predict(train_input_vec);
