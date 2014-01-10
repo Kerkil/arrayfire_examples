@@ -47,7 +47,7 @@ static void setup(int *num_classes, int *num_train, int *num_test,
     af::array labels = af::array(ldims[0], &ldata[0]);
 
     af::array R = randu(10000, 1);
-    af::array cond = R < 0.75;
+    af::array cond = R < 0.6;
     af::array train_indices = where( cond);
     af::array test_indices  = where(!cond);
 
