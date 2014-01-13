@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XXX", "XXX_vs2008.vcproj", "{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|CUDA_x64 = Debug|CUDA_x64
+		Debug|OpenCL_x64 = Debug|OpenCL_x64
+		Release|CUDA_x64 = Release|CUDA_x64
+		Release|OpenCL_x64 = Release|OpenCL_x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Debug|CUDA_x64.ActiveCfg = CUDA_Debug|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Debug|CUDA_x64.Build.0 = CUDA_Debug|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Debug|OpenCL_x64.ActiveCfg = OpenCL_Debug|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Debug|OpenCL_x64.Build.0 = OpenCL_Debug|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Release|CUDA_x64.ActiveCfg = CUDA_Release|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Release|CUDA_x64.Build.0 = CUDA_Release|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Release|OpenCL_x64.ActiveCfg = OpenCL_Release|x64
+		{5EE999F9-825A-4D86-A26F-8C50D6E3C6A2}.Release|OpenCL_x64.Build.0 = OpenCL_Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
