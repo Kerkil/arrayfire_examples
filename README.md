@@ -8,9 +8,23 @@ Please refer to the **LICENSE** file for more information.
 
 Usage
 ------------------
-### Generate the Project Files
+### Linux
 
-Once the repo is cloned, open the command prompt into the root folder of the repo, ie. ArrayFire-Examples>
+Linux makefiles have been provided with this repo. To compile an example,
+go the the directory of the file and enter the following command:
+
+For CUDA  : **`make cuda`**
+
+For OpenCL: **`make opencl`**
+
+The executables filenames generated are in the format **example_cuda/ocl**.
+
+### Windows
+
+#### Generate the Project Files
+
+Once the repo is cloned, open the command prompt into the root folder of the
+repo, ie. ArrayFire-Examples.
 Now enter the following command:
 
 **`.\vs-files\update.bat .\`**
@@ -20,4 +34,6 @@ This command will generate project and solution files for Visual Studio 2008,
 using the consolidated solution files (AF_Examples_20*.sln).
 
 ### Running the Examples
-Refer to the [ArrayFire Documentation](http://www.accelereyes.com/arrayfire/c/installation.htm#verifywindows) to see the execution procedure.
+Refer to the [ArrayFire Documentation]
+(http://www.accelereyes.com/arrayfire/c/installation.htm#verifywindows) to see
+the execution procedure.
