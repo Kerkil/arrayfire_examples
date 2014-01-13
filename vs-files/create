@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+[ $# = 1 ] || { echo "usage: $0 example.cpp" >&2; exit 1; }
+
+vsdir=$(dirname $0)  # visual studio configs
+src=$(basename $1)
+bin=${src%.*}
+
+pat="s/XXX_SRC/$src/g; s/XXX/$bin/g"
+
+#sed -e "$pat" $vsdir/vs2010.sln >${bin}_vs2010.sln
+#sed -e "$pat" $vsdir/vs2012.sln >${bin}_vs2012.sln
+sed -e "$pat" $vsdir/vs2010.vcxproj >${bin}_vs2010.vcxproj
+sed -e "$pat" $vsdir/vs2012.vcxproj >${bin}_vs2012.vcxproj

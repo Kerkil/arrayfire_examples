@@ -1,0 +1,18 @@
+#!/bin/sh
+set -eu
+
+mydir=`readlink -f $(dirname $0)`
+
+alias find=/usr/bin/find
+files=`find ./ -name *.cpp`
+olddir=`pwd`
+alias create=$mydir/create
+
+for file in $files; do
+    dir=$(dirname $file)
+    src=$(basename $file)
+    cd $dir
+    pwd
+    create $src
+    cd $olddir
+done
