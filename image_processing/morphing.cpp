@@ -60,8 +60,9 @@ array border(const array& img, const unsigned size, const float value = 0.0)
 
 array blur(const array& img, const array mask = gaussiankernel(3,3))
 {
-    array blurred = img.copy();
-    blurred = filter(blurred, mask);
+    array blurred = array(img.dims(), img.type());
+    for(int i = 0; i < blurred.dims(2); i++)
+        blurred(span, span, i) = filter(img(span, span, i), mask);
     return blurred;
 }
 
