@@ -1,9 +1,9 @@
 ArrayFire-Examples
 ==================
 
-This repository contains example applications built using ArrayFire. 
+This repository contains example applications built using ArrayFire.
 
-The source code in this repository released under BSD 3-clause license. 
+The source code in this repository released under BSD 3-clause license.
 Please refer to the **LICENSE** file for more information.
 
 Usage
@@ -27,7 +27,7 @@ Once the repo is cloned, open the command prompt into the root folder of the
 repo, ie. ArrayFire-Examples.
 Now enter the following command:
 
-**`.\vs-files\update.bat .\`**
+**`.\vs-files\update.bat`**
 
 This command will generate project and solution files for Visual Studio 2008,
 2010 and 2012 for all the examples. These projects are also necessary if

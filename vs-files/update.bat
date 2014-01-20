@@ -1,16 +1,8 @@
 REM REM is comments
-REM USAGE: From ArrayFire-Examples folder:
-REM ArrayFire-Examples> .\vs-files\update.bat ..\ArrayFire-Examples
+REM USAGE: Open Command Prompt. From ArrayFire-Examples folder:
+REM ArrayFire-Examples> .\vs-files\update.bat
 
 @echo off
-
-IF EXIST %~f1 (
-    echo Directory Found
-)
-IF NOT EXIST %~f1 (
-    echo Directory Not Found
-    exit
-)
 
 REM List full path
 REM for /R %%f in (*.cpp) do echo %%f
