@@ -8,6 +8,9 @@ files=`find ./ -name *.cpp`
 olddir=`pwd`
 alias create=$mydir/create
 
+#Copy consolidated solutions
+cp $mydir/AF_Examples_vs*.sln ./
+
 for file in $files; do
     dir=$(dirname $file)
     src=$(basename $file)

@@ -15,6 +15,10 @@ REM for /R %%f in (*.cpp) do echo %%~pf
 
 set VSDIR=%~dp0
 set SEARCH=XXX
+
+REM Copy Consolidated Solutions
+copy /y %VSDIR%AF_Examples_vs*.sln .\
+
 for /R %%f in (*.cpp) do (
     echo %%f
     PUSHD %%~pf
