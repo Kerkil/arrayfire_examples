@@ -52,10 +52,12 @@ int main(int argc, char **argv)
 {
     int device = argc > 1 ? atoi(argv[1]) : 0;
     int iter = argc > 2 ? atoi(argv[2]) : 100;
+    bool console = argc > 2 ? argv[2][0] == '-' : false;
     try {
 
         af::deviceset(device);
         info();
+        printf("** ArrayFire Fractals Demo **\n");
 
         float center[] = {-0.5, 0};
         // Keep zomming out for each frame
@@ -65,17 +67,20 @@ int main(int argc, char **argv)
 
             // Generate the mandelbrot image
             array mag = mandelbrot(c, iter, 1000);
-
-            fig("color", "heat");
-            af::image(mag);
+            if(!console) {
+                fig("color", "heat");
+                af::image(mag);
+            }
         }
-
-        printf("Hit enter to finish\n");
-        getchar();
 
     } catch (af::exception &e) {
         fprintf(stderr, "%s\n", e.what());
         throw;
+    }
+
+    if(!console) {
+        printf("Press any key to exit\n");
+        getchar();
     }
     return 0;
 }

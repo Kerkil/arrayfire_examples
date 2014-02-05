@@ -172,21 +172,51 @@ array edge(const array &in, int method = 0)
     return res;
 }
 
-int main()
+void edge(bool console)
 {
+    array in = loadimage("../common/images/lena.ppm", false);
+
+    array prewitt = edge(in, 1);
+    array sobel   = edge(in, 2);
+#ifndef AFCL
+    array canny   = edge(in, 3);
+#endif
+
+    if(!console) {
+        // colormap, grayscale
+        fig("color","default");
+
+        fig("sub", 2, 2, 1); image(in);             fig("title", "Input");
+        fig("sub", 2, 2, 2); image(prewitt);        fig("title", "Prewitt");
+        fig("sub", 2, 2, 3); image(sobel);          fig("title", "Sobel");
+#ifndef AFCL
+        fig("sub", 2, 2, 4); image(canny);      fig("title", "Canny");
+#endif
+
+        // Force screen refresh (optional)
+        fig("draw");
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    int device = argc > 1 ? atoi(argv[1]) : 0;
+    bool console = argc > 2 ? argv[2][0] == '-' : false;
+
     try {
+        af::deviceset(device);
+        af::info();
+        printf("** ArrayFire Edge Detection Demo **\n");
+        edge(console);
 
-        array in = loadimage("../common/images/lena.ppm", false);
+    } catch (af::exception &e) {
+        fprintf(stderr, "%s\n", e.what());
+        throw;
+    }
 
-        fig("sub", 2, 2, 1); image(in);                   fig("title", "Input");
-        fig("sub", 2, 2, 2); image(edge(in, 1));          fig("title", "Prewitt");
-        fig("sub", 2, 2, 3); image(edge(in, 2));          fig("title", "Sobel");
-        fig("sub", 2, 2, 4); image(edge(in, 3));          fig("title", "Canny");
-
-        printf("Hit enter to finish\n");
+    if(!console) {
+        printf("Press any key to exit\n");
         getchar();
-    } catch (af::exception &ae) {
-        std::cout << ae.what() << std::endl;
     }
     return 0;
 }
