@@ -21,13 +21,16 @@ OS_MAC = 0
 
 ifeq ($(shell uname), Darwin)
   OS_MAC = 1
+  CFLAGS += -DOS_MAC
 endif
 ifeq ($(shell uname), Linux)
   OS_LNX = 1
+  CFLAGS += -DOS_LNX
 endif
 ifeq ($(OS_MAC), 0)
   ifeq ($(OS_LNX), 0)
     OS_WIN = 1
+    CFLAGS += -DOS_WIN
   endif
 endif
 
@@ -56,12 +59,8 @@ ifeq ($(OS),64)
   CFLAGS += -m64
 endif
 
-ifeq ($(OS_LNX),1)
-  LDFLAGS += -lrt
-endif
-
 ifeq ($(OS_WIN),0)
-  CFLAGS += -Wall -Werror
+  CFLAGS += -Wall -Werror -lstdc++
 endif
 
 CFLAGS   += -I$(AF_PATH)/include -pthread
@@ -69,22 +68,32 @@ CFLAGS   += $(shell test -f .DEBUG && echo -g -O0 -DDEBUG || echo -O2 -DNDEBUG)
 ifeq ($(OS_LNX),1)
   LDFLAGS  += -Wl,--no-as-needed
 endif
-LDFLAGS  += -L$(AF_PATH)/$(LIB) -lpthread -lstdc++ -lm
+LDFLAGS  += -L$(AF_PATH)/$(LIB) -lpthread -lm
 LDFLAGS  += -Wl,-rpath,$(AF_PATH)/$(LIB),-rpath,$(abspath $(AF_PATH))/$(LIB)
 
 ifeq ($(findstring cuda, $(MAKECMDGOALS)), cuda)
+        LDFLAGS += -Wl,-rpath,$(CUDA_PATH)/$(LIB)
+	LDFLAGS += -lafcu -L$(CUDA_PATH)/$(LIB) -lcudart -lcurand -lcusparse -lstdc++
 	CFLAGS += -I$(CUDA_PATH)/include
-	LDFLAGS += -lafcu  -L$(CUDA_PATH)/$(LIB) -lcuda -lcudart -lcurand -lcusparse
-	LDFLAGS += -Wl,-rpath,$(CUDA_PATH)/$(LIB)
 	EXT:=cuda
 	WIN_BIN_DIR := CUDA
 	TARGET := 'Release|CUDA_x64'
+    ifeq ($(OS_MAC),1)
+        LDFLAGS += -F/Library/Frameworks -framework CUDA
+    else
+        ifeq ($(OS_LNX),1)
+	    LDFLAGS += -lcuda -lrt
+        endif
+    endif
 else
 	CFLAGS += -DAFCL
-	LDFLAGS += -lafcl
+	LDFLAGS += -lafcl -lstdc++
 	EXT:=ocl
 	WIN_BIN_DIR := OpenCL
 	TARGET := 'Release|OpenCL_x64'
+    ifeq ($(OS_MAC),1)
+        CFLAGS += -framework OpenCL
+    endif
 endif
 
 SRC:=$(wildcard *.cpp)
