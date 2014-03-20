@@ -15,6 +15,7 @@ static ty monte_carlo_barrier(int N, ty K, ty t, ty vol, ty r, ty strike, int st
 {
     dtype pres = get_dtype<ty>();
     array payoff = constant(0, 1, N, pres);
+
     ty dt = t / (ty)(steps - 1);
     array s = strike * constant(1, 1, N, pres);
 
@@ -25,7 +26,7 @@ static ty monte_carlo_barrier(int N, ty K, ty t, ty vol, ty r, ty strike, int st
     S = accum(S, 0, prod_t);
 
     if (use_barrier) {
-        S(end, span) *= alltrue(S < B);
+        S(end, span) = S(end, span) * alltrue(S < B);
     }
 
     payoff = max(0.0, S.row(steps - 1) - K);
