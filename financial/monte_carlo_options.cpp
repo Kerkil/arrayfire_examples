@@ -22,14 +22,13 @@ static ty monte_carlo_barrier(int N, ty K, ty t, ty vol, ty r, ty strike, int st
     array randmat = randn(steps - 1, N, pres);
     randmat = exp((r - (vol * vol * 0.5)) * dt + vol * sqrt(dt) * randmat);
 
-    array S = join(0, s, randmat);
-    S = accum(S, 0, prod_t);
+    array S = mul(join(0, s, randmat));
 
     if (use_barrier) {
-        S(end, span) = S(end, span) * alltrue(S < B);
+        S = S * alltrue(S < B);
     }
 
-    payoff = max(0.0, S.row(steps - 1) - K);
+    payoff = max(0.0, S - K);
     ty P = mean<ty>(payoff) * exp(-r * t);
     return P;
 }
@@ -62,7 +61,7 @@ int main()
         monte_carlo_bench<float, true>(1000);
 
         for (int n = 25000; n <= 250000; n += 25000) {
-            printf("Time for %7d options - "
+            printf("Time for %7d paths - "
                    "vanilla method: %4.3f ms,  "
                    "barrier method: %4.3f ms\n", n,
                    1000 * monte_carlo_bench<float, false>(n),
