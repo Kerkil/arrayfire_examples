@@ -61,7 +61,7 @@ int main()
         monte_carlo_bench<float, false>(1000);
         monte_carlo_bench<float, true>(1000);
 
-        for (int n = 100000; n <= 1000000; n += 100000) {
+        for (int n = 25000; n <= 250000; n += 25000) {
             printf("Time for %7d options - "
                    "vanilla method: %4.3f ms,  "
                    "barrier method: %4.3f ms\n", n,
