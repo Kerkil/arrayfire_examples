@@ -121,10 +121,10 @@ rmsym:
 	rm -f $(NOEXT)
 
 %_ocl: %.cpp
-	$(CC) $(CPPFLAGS) $(LDFLAGS) $< -o $@
+	$(CC) $< $(CPPFLAGS) $(LDFLAGS) -o $@
 
 %_cuda: %.cpp
-	$(CC) $(CPPFLAGS) $(LDFLAGS) $< -o $@
+	$(CC) $< $(CPPFLAGS) $(LDFLAGS) -o $@
 
 $(WIN_BIN_DIR)/%.exe: %_vs2008.sln %.cpp
 	devenv.com $< /Rebuild $(TARGET)
