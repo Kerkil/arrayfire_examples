@@ -3,8 +3,7 @@
 #include <math.h>
 using namespace af;
 
-#ifndef AFCL
-static int n = 2048; // n-by-n matrix for benchmarking
+static int n = 1024; // n-by-n matrix for benchmarking
 static int ndevice; // how many devices to use
 static void bench()
 {
@@ -14,13 +13,11 @@ static void bench()
         array y = fft(x);          // analyze signal of each column
     }
 }
-#endif
 
 int main(int argc, char **argv)
 {
     try {
         info();
-#ifndef AFCL
         int total_device = devicecount();
         for (ndevice = 1; ndevice <= total_device; ++ndevice) {
             double time_s = timeit(bench); // seconds
@@ -28,10 +25,6 @@ int main(int argc, char **argv)
             printf("%dx%d random number gen and complex FFT on %d devices...  %.1f gflops\n",
                    n, n, ndevice, gflops);
         }
-#else
-        printf("Multi gpu support for ArrayFire OpenCL will be available in final release\n");
-#endif
-
     } catch (af::exception& e) {
         fprintf(stderr, "%s\n", e.what());
         throw;

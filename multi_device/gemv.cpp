@@ -4,7 +4,6 @@
 #include <assert.h>
 
 using namespace af;
-#ifndef AFCL
 static void multi_Sgemv(int iterations, int ndevice, array *AMatrix, int m, const float* X, int n, float *Y)
 {
     array *YVector = new array[ndevice];
@@ -46,19 +45,17 @@ static void ones(float *X, int n)
 
 #define MB (1024 * 1024)
 #define mb(x)   (unsigned)((x) / MB + !!((x) % MB))
-#endif
 
 int main(int argc, char  **argv)
 {
     try {
-        #ifndef AFCL
         printf("Multi-GPU Matrix-Vector Multiply: y = A*x\n\n"
                "The system matrix 'A' is distributed across the available devices.\n"
                "Each iteration pushes 'x' to the devices, multiplies against the matrix 'A',\n"
                "and pulls the result 'y' back to the host.\n\n");
         info();
 
-        int iterations = 1000;
+        int iterations = 100;
 
         // Get number of active GPUs in the system
         int ndevice = devicecount();
@@ -67,7 +64,7 @@ int main(int argc, char  **argv)
             return 0;
         }
 
-        int n = ndevice*7000;
+        int n = ndevice*4000;
         printf("size(A)=[%d,%d]  (%u mb)\n", n, n, mb(n * n * sizeof(float)));
 
         printf("\nBenchmarking........\n\n");
@@ -96,10 +93,6 @@ int main(int argc, char  **argv)
             assert(Y[i] == n);
 
         delete[] X; delete[] Y; // cleanup
-        #else
-        printf("Multi gpu support for ArrayFire OpenCL will be available in final release\n");
-        #endif
-
     } catch (af::exception& e) {
         fprintf(stderr, "%s\n", e.what());
         throw;
