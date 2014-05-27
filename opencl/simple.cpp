@@ -31,7 +31,7 @@ int main()
     // Check for errors
     // sin(x)^ + cos(x)^2 == 1
     // The following should print 0
-    float err = af::sum<float>(y - 1);
+    float err = af::sum<float>(af::abs(y - 1));
     printf("Error: %f\n", err);
 
     return 0;
