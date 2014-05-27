@@ -20,7 +20,7 @@ int main()
     af::sync();
 
     // Launch kernel to do the following operations
-    // y = sin(x)^2 + con(x)^2
+    // y = sin(x)^2 + cos(x)^2
     launch_simple_kernel(d_y, d_x, num);
 
     // Tell arrayfire it controls the pointers again
