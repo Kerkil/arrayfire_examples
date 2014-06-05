@@ -4,7 +4,7 @@
 #include <string>
 #include <af/utils.h>
 #include <math.h>
-#include "mlcommon.h"
+#include "mnist_common.h"
 
 using namespace af;
 using namespace std;
@@ -165,8 +165,8 @@ int ann_demo(bool console)
     array train_target, test_target;
     int num_classes, num_train, num_test;
 
-    setup(&num_classes, &num_train, &num_test,
-          train_input, test_input, train_target, test_target);
+    setup_mnist(&num_classes, &num_train, &num_test,
+                train_input, test_input, train_target, test_target);
 
     int feature_size = train_input.elements() / num_train;
 

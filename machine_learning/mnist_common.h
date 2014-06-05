@@ -29,17 +29,17 @@ std::string classify(array vec)
     return ss.str();
 }
 
-static void setup(int *num_classes, int *num_train, int *num_test,
-                  af::array &train_images, af::array &test_images,
-                  af::array &train_labels, af::array &test_labels)
+static void setup_mnist(int *num_classes, int *num_train, int *num_test,
+                        af::array &train_images, af::array &test_images,
+                        af::array &train_labels, af::array &test_labels)
 {
     std::vector<unsigned> idims;
     std::vector<float   > idata;
-    read_idx(idims, idata, "../common/data/mnist-images-subset");
+    read_idx(idims, idata, "../common/data/mnist/images-subset");
 
     std::vector<unsigned> ldims;
     std::vector<unsigned> ldata;
-    read_idx(ldims, ldata, "../common/data/mnist-labels-subset");
+    read_idx(ldims, ldata, "../common/data/mnist/labels-subset");
 
     std::reverse(idims.begin(), idims.end());
     unsigned numdims = idims.size();
