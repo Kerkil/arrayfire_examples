@@ -72,12 +72,39 @@ static void setup_mnist(int *num_classes, int *num_train, int *num_test,
     return;
 }
 
-static af::array randidx(int num, int num_test)
+static af::array randidx(int num, int total)
 {
     af::array locs;
     do {
-        locs = where(randu(num_test, 1) < float(num * 2) / num_test);
+        locs = where(randu(total, 1) < float(num * 2) / total);
     } while (locs.elements() < num);
 
     return locs(seq(num));
+}
+
+static void display_results(array &test_input,
+                            array &test_output,
+                            int num_display)
+{
+    array locs = randidx(num_display, test_output.dims(1));
+
+    array disp_in  = test_input(span, span, locs);
+    array disp_out = test_output(span, locs);
+
+    for (int i = 0; i < 5; i++) {
+
+        int imgs_per_iter = num_display / 5;
+        for (int j = 0; j < imgs_per_iter; j++) {
+
+            int k = i * imgs_per_iter + j;
+            fig("sub", 2, imgs_per_iter / 2, j+1);
+
+            image(disp_in(span, span, k).T());
+            string pred_name = string("Predicted: ") + classify(disp_out(span, k));
+            fig("title", pred_name.c_str());
+        }
+
+        printf("Press any key to see next set");
+        getchar();
+    }
 }

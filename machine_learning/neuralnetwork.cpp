@@ -200,30 +200,8 @@ int ann_demo(bool console)
            accuracy(test_output , test_target ));
 
     if (!console) {
-
         // Get 20 random test images.
-        int num_display = 20;
-        array locs = randidx(num_display, num_test);
-
-        array disp_in  = test_input(span, span, locs);
-        array disp_out = test_output(span, locs);
-
-        for (int i = 0; i < 5; i++) {
-
-            int imgs_per_iter = num_display / 5;
-            for (int j = 0; j < imgs_per_iter; j++) {
-
-                int k = i * imgs_per_iter + j;
-                fig("sub", 2, imgs_per_iter / 2, j+1);
-
-                image(disp_in(span, span, k).T());
-                string pred_name = string("Predicted: ") + classify(disp_out(span, k));
-                fig("title", pred_name.c_str());
-            }
-
-            printf("Press any key to see next set");
-            getchar();
-        }
+        display_results(test_input, test_output, 20);
     }
 
     return 0;
