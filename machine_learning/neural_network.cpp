@@ -9,10 +9,12 @@
 using namespace af;
 using namespace std;
 
-// Get accuracy of the predicted results
 float accuracy(const array& predicted, const array& target)
 {
-    return 100 * count(round(predicted) == target) / target.elements();
+    array val, plabels, tlabels;
+    max(val, tlabels, target);
+    max(val, plabels, predicted);
+    return 100 * count(plabels == tlabels) / tlabels.elements();
 }
 
 // Activation function
