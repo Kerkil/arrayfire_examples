@@ -161,23 +161,23 @@ int ann_demo(bool console)
 {
     printf("** ArrayFire ANN Demo **\n\n");
 
-    array train_input, test_input;
+    array train_images, test_images;
     array train_target, test_target;
     int num_classes, num_train, num_test;
 
-    setup_mnist(&num_classes, &num_train, &num_test,
-                train_input, test_input, train_target, test_target);
+    setup_mnist<true>(&num_classes, &num_train, &num_test,
+                      train_images, test_images, train_target, test_target);
 
-    int feature_size = train_input.elements() / num_train;
+    int feature_size = train_images.elements() / num_train;
 
     // Reshape images into feature vectors
-    array train_input_vec = moddims(train_input, feature_size, num_train);
-    array test_input_vec  = moddims(test_input , feature_size, num_test );
+    array train_feats = moddims(train_images, feature_size, num_train);
+    array test_feats  = moddims(test_images , feature_size, num_test );
 
     // Network parameters
     int num_layers = 3;
     vector<int> layers(num_layers);
-    layers[0] = train_input_vec.dims(0);
+    layers[0] = train_feats.dims(0);
     layers[1] = 16 * 16;
     layers[2] = num_classes;
 
@@ -185,11 +185,11 @@ int ann_demo(bool console)
     ann network(num_layers, layers);
 
     // Train network
-    network.train(train_input_vec, train_target, 0.5, 500, 1, true);
+    network.train(train_feats, train_target, 0.5, 500, 1, true);
 
     // Run the trained network and test accuracy.
-    array train_output = network.predict(train_input_vec);
-    array test_output  = network.predict(test_input_vec );
+    array train_output = network.predict(train_feats);
+    array test_output  = network.predict(test_feats );
 
     printf("\nTraining set:\n");
     printf("Accuracy on training data: %2.2f\n",
@@ -201,7 +201,7 @@ int ann_demo(bool console)
 
     if (!console) {
         // Get 20 random test images.
-        display_results(test_input, test_output, 20);
+        display_results<true>(test_images, test_output, 20);
     }
 
     return 0;
