@@ -14,6 +14,7 @@ float accuracy(const array& predicted, const array& target)
     return 100 * count(predicted == target) / target.elements();
 }
 
+// Normalize features between 0 and 1
 void normalize(array &feats)
 {
     array mn = min(feats, 1);
@@ -26,6 +27,7 @@ void normalize(array &feats)
     feats = (feats - mnt) / (mxt - mnt);
 }
 
+// Calculate all the distances from testing set to training set
 array distance(array train, array test)
 {
     const int feat_len = train.dims(1);
@@ -33,13 +35,18 @@ array distance(array train, array test)
     const int num_test  =  test.dims(0);
     array dist = constant(0, num_train, num_test);
 
+    // Iterate over each attribute
     for (int ii = 0; ii < feat_len; ii++) {
+
+        // Get a attribute vectors
         array train_i = train(span, ii);
         array test_i  = test (span, ii).T();
 
+        // Tile the vectors to generate matrices
         array train_tiled = tile(train_i, 1,   num_test);
         array test_tiled  = tile( test_i, num_train, 1 );
 
+        // Add the distance for this attribute
         dist = dist + abs(train_tiled - test_tiled);
     }
 
@@ -48,14 +55,18 @@ array distance(array train, array test)
 
 array knn(array &train_feats, array &test_feats, array &train_labels)
 {
+    // Normalize the input data
     normalize(train_feats);
     normalize(test_feats);
 
+    // Find distances between training and testing sets
     array dist = distance(train_feats, test_feats);
 
+    // Find the neighbor producing the minimum distance
     array val, idx;
     min(val, idx, dist);
 
+    // Return the labels
     return train_labels(idx.as(f32)).T();
 }
 
@@ -65,6 +76,7 @@ void knn_demo(bool console)
     array test_images, test_labels;
     int num_train, num_test, num_classes;
 
+    // Load mnist data
     setup_mnist<false>(&num_classes, &num_train, &num_test,
                        train_images, test_images,
                        train_labels, test_labels);
@@ -73,7 +85,10 @@ void knn_demo(bool console)
     array train_feats = moddims(train_images, feature_length, num_train).T();
     array test_feats  = moddims(test_images , feature_length, num_test ).T();
 
+    // Get the predicted results
     array res_labels = knn(train_feats, test_feats, train_labels);
+
+    // Results
     printf("Accuracy on testing  data: %2.2f\n",
            accuracy(res_labels , test_labels));
 
