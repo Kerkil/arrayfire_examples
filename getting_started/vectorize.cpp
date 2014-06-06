@@ -70,13 +70,13 @@ static array dist_gfor2(array a, array b)
 {
     array dist_mat = constant(0, a.dims(1), b.dims(1));
 
-    // Iterate through columns of A
-    for (int ii = 0; ii < a.dims(1); ii++) {
-        array avec = a(span, ii);
+    // GFOR along columns of b
+    gfor (array jj, b.dims(1)) {
+        array bvec = b(span, jj);
 
-        // GFOR along columns of b
-        gfor (array jj, b.dims(1)) {
-            array bvec = b(span, jj);
+        // Iterate through columns of A
+        for (int ii = 0; ii < a.dims(1); ii++) {
+            array avec = a(span, ii);
 
             // get SAD using sum on the vector
             dist_mat(ii, jj) = sum(abs(avec - bvec));
