@@ -14,19 +14,6 @@ float accuracy(const array& predicted, const array& target)
     return 100 * count(predicted == target) / target.elements();
 }
 
-// Normalize features between 0 and 1
-void normalize(array &feats)
-{
-    array mn = min(feats, 1);
-    array mx = max(feats, 1);
-    int num_feats = feats.dims(1);
-
-    array mnt = tile(mn, 1, num_feats);
-    array mxt = tile(mx, 1, num_feats);
-
-    feats = (feats - mnt) / (mxt - mnt);
-}
-
 // Calculate all the distances from testing set to training set
 array distance(array train, array test)
 {
@@ -55,10 +42,6 @@ array distance(array train, array test)
 
 array knn(array &train_feats, array &test_feats, array &train_labels)
 {
-    // Normalize the input data
-    normalize(train_feats);
-    normalize(test_feats);
-
     // Find distances between training and testing sets
     array dist = distance(train_feats, test_feats);
 

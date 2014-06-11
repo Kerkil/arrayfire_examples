@@ -55,8 +55,8 @@ static void setup_mnist(int *num_classes, int *num_train, int *num_test,
     af::array train_indices = where( cond);
     af::array test_indices  = where(!cond);
 
-    train_images = images(af::span, af::span, train_indices); // Normalize
-    test_images  = images(af::span, af::span, test_indices );
+    train_images = images(af::span, af::span, train_indices) / 255;
+    test_images  = images(af::span, af::span, test_indices ) / 255;
 
     *num_classes = 10;
     *num_train = train_images.dims(2);

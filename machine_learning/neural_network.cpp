@@ -148,8 +148,8 @@ double ann::train(const array &input, const array &target,
 
 
         // Print iteration count only if in verbose mode
-        if (verbose && !(i%25)) {
-            printf("Iteration: %4d, Err: %2.2e\n", i, err);
+        if (verbose && !((i + 1)%100)) {
+            printf("Iteration: %4d, Err: %2.2e\n", i+1, err);
         }
 
         // Propagate the error backward
@@ -180,14 +180,14 @@ int ann_demo(bool console)
     int num_layers = 3;
     vector<int> layers(num_layers);
     layers[0] = train_feats.dims(0);
-    layers[1] = 16 * 16;
+    layers[1] = 7 * 7;
     layers[2] = num_classes;
 
     // Create network
     ann network(num_layers, layers);
 
     // Train network
-    network.train(train_feats, train_target, 0.5, 500, 1, true);
+    network.train(train_feats, train_target, 2.0, 3000, 1, true);
 
     // Run the trained network and test accuracy.
     array train_output = network.predict(train_feats);
