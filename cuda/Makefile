@@ -23,7 +23,9 @@ LDFLAGS+=-L$(AF_PATH)/$(LIB) -lafcu
 LDFLAGS += -Xlinker -rpath -Xlinker $(AF_PATH)/$(LIB)
 LDFLAGS += -Xlinker -rpath -Xlinker $(abspath $(AF_PATH))/$(LIB)
 
-all: $(BIN)
+all: cuda
+
+cuda: $(BIN)
 
 %: %.cu
 	@$(NVCC) -o $@ $(CFLAGS) $< $(LDFLAGS)

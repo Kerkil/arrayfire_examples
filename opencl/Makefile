@@ -19,7 +19,9 @@ LDFLAGS+=$(AF_PATH)/$(LIB)/libOpenCL.so.1
 CPPFLAGS=$(CFLAGS)
 CXXFLAGS=$(CFLAGS)
 
-all: $(BIN)
+all: opencl
+
+opencl: $(BIN)
 
 clean:
 	rm -f $(BIN)
