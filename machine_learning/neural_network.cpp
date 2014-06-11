@@ -12,8 +12,8 @@ using namespace std;
 float accuracy(const array& predicted, const array& target)
 {
     array val, plabels, tlabels;
-    max(val, tlabels, target);
-    max(val, plabels, predicted);
+    max(val, tlabels, target, 1);
+    max(val, plabels, predicted, 1);
     return 100 * count(plabels == tlabels) / tlabels.elements();
 }
 
@@ -68,7 +68,7 @@ public:
 array ann::add_bias(const array &in)
 {
     // Bias input is added on top of given input
-    return join(0, constant(1, 1, in.dims(1)), in);
+    return join(1, constant(1, in.dims(0), 1), in);
 }
 
 vector<array> ann::forward_propagate(const array& input)
@@ -79,7 +79,7 @@ vector<array> ann::forward_propagate(const array& input)
 
     for (int i = 0; i < m_num_layers - 1; i++) {
         array in = add_bias(signal[i]);
-        array out = matmul(weights[i], in);
+        array out = matmul(in, weights[i]);
         signal[i + 1] = sigmoid(out);
     }
 
@@ -94,25 +94,23 @@ void ann::back_propagate(const vector<array> signal,
     // Get error for output layer
     array out = signal[m_num_layers  - 1];
     array err = (out - target);
-    int m = target.dims(1);
+    int m = target.dims(0);
 
     for (int i = m_num_layers - 2; i >= 0; i--) {
         array in = add_bias(signal[i]);
-
-        array delta = deriv(out) * err;
+        array delta = (deriv(out) * err).T();
 
         // Adjust weights
-        array grad = -(alpha * matmul(delta, in.T())) / m;
-        weights[i] += grad;
+        array grad = -(alpha * matmul(delta, in)) / m;
+        weights[i] += grad.T();
 
         // Input to current layer is output of previous
         out = signal[i];
-        err = matmul(weights[i].T(), delta);
+        err = matmul(weights[i], delta).T();
 
         // Remove the error of bias and propagate backward
-        err = err(seq(1, out.dims(0)), span);
+        err = err(span, seq(1, out.dims(1)));
     }
-
 }
 
 ann::ann(int num_layers, vector<int> layers, double range) :
@@ -120,7 +118,7 @@ ann::ann(int num_layers, vector<int> layers, double range) :
 {
     // Generate uniformly distributed random numbers between [-range/2,range/2]
     for (int i = 0; i < num_layers - 1; i++) {
-        weights[i] = range * randu(layers[i + 1], layers[i] + 1) - range/2;
+        weights[i] = range * randu(layers[i] + 1, layers[i + 1]) - range/2;
     }
 }
 
@@ -173,13 +171,16 @@ int ann_demo(bool console)
     int feature_size = train_images.elements() / num_train;
 
     // Reshape images into feature vectors
-    array train_feats = moddims(train_images, feature_size, num_train);
-    array test_feats  = moddims(test_images , feature_size, num_test );
+    array train_feats = moddims(train_images, feature_size, num_train).T();
+    array test_feats  = moddims(test_images , feature_size, num_test ).T();
+
+    train_target = train_target.T();
+    test_target  = test_target.T();
 
     // Network parameters
     int num_layers = 3;
     vector<int> layers(num_layers);
-    layers[0] = train_feats.dims(0);
+    layers[0] = train_feats.dims(1);
     layers[1] = 7 * 7;
     layers[2] = num_classes;
 
@@ -187,7 +188,9 @@ int ann_demo(bool console)
     ann network(num_layers, layers);
 
     // Train network
+    timer::start();
     network.train(train_feats, train_target, 2.0, 3000, 1, true);
+    printf("Time taken to train: %4.2lf s\n", timer::stop());
 
     // Run the trained network and test accuracy.
     array train_output = network.predict(train_feats);
@@ -203,6 +206,7 @@ int ann_demo(bool console)
 
     if (!console) {
         // Get 20 random test images.
+        test_output = test_output.T();
         display_results<true>(test_images, test_output, 20);
     }
 
