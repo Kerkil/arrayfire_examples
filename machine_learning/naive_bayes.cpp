@@ -14,18 +14,16 @@ float accuracy(const array& predicted, const array& target)
     return 100 * count(predicted == target) / target.elements();
 }
 
-array naive_bayes(const array &train_feats, const array &test_feats, const array &train_labels)
+array naive_bayes(int num_classes, const array &train_feats, const array &test_feats, const array &train_classes)
 {
-    int num_labels = 10;
-
     int feat_len = train_feats.dims(0);
     int num_test = test_feats.dims(1);
 
     // Get mean and variance from trianing data
-    array mu  = constant(0, feat_len, num_labels);
-    array sig2 = constant(0, feat_len, num_labels);
-    for (int ii = 0; ii < num_labels; ii++) {
-        array idx = where(train_labels == ii);
+    array mu  = constant(0, feat_len, num_classes);
+    array sig2 = constant(0, feat_len, num_classes);
+    for (int ii = 0; ii < num_classes; ii++) {
+        array idx = where(train_classes == ii);
         array train_feats_ii = train_feats(span, idx);
 
         mu(span, ii)  = mean(train_feats_ii, 1);
@@ -36,8 +34,8 @@ array naive_bayes(const array &train_feats, const array &test_feats, const array
 
     // Predict the probabilities for testing data
     // Using log of probabilities to reduce rounding errors
-    array log_probs = constant(1, num_test, num_labels);
-    for (int ii = 0; ii < num_labels; ii++) {
+    array log_probs = constant(1, num_test, num_classes);
+    for (int ii = 0; ii < num_classes; ii++) {
 
         // Tile the current mean and variance to the testing data size
         array Mu  = tile(mu (span, ii), 1, num_test);
@@ -76,7 +74,7 @@ void naive_bayes_demo(bool console)
     test_feats  =  test_feats + tile(min(test_feats , 1), 1, num_test );
 
     // Get the predicted results
-    array res_labels = naive_bayes(train_feats, test_feats, train_labels);
+    array res_labels = naive_bayes(num_classes, train_feats, test_feats, train_labels);
 
     // Results
     printf("Accuracy on testing  data: %2.2f\n",
