@@ -61,6 +61,27 @@ array naive_bayes_predict(const array &mu, const array &sig2, const array &test_
     return idx.as(f32);
 }
 
+void benchmark_nb(const array &train_feats, const array test_feats,
+                  const array &train_labels, int num_classes)
+{
+    array mu, sig2;
+    int iter = 25;
+
+    timer::start();
+    for (int i = 0; i < iter; i++) {
+        naive_bayes_train(mu, sig2, train_feats, train_labels, num_classes);
+    }
+    af::sync();
+    printf("Training time: %4.4lf s\n", timer::stop() / iter);
+
+    timer::start();
+    for (int i = 0; i < iter; i++) {
+        naive_bayes_predict(mu, sig2, test_feats, num_classes);
+    }
+    af::sync();
+    printf("Prediction time: %4.4lf s\n", timer::stop() / iter);
+}
+
 void naive_bayes_demo(bool console, int perc)
 {
     array train_images, train_labels;
@@ -92,6 +113,8 @@ void naive_bayes_demo(bool console, int perc)
     printf("Trainng samples: %4d, Testing samples: %4d\n", num_train, num_test);
     printf("Accuracy on testing  data: %2.2f\n",
            accuracy(res_labels , test_labels));
+
+    benchmark_nb(train_feats, test_feats, train_labels, num_classes);
 
     if (!console) {
         display_results<false>(test_images, res_labels, 20);

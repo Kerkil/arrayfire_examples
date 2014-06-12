@@ -69,12 +69,16 @@ void knn_demo(bool console, int perc)
     array train_feats = moddims(train_images, feature_length, num_train).T();
     array test_feats  = moddims(test_images , feature_length, num_test ).T();
 
+    timer::start();
     // Get the predicted results
     array res_labels = knn(train_feats, test_feats, train_labels);
+    double test_time = timer::stop();
 
     // Results
     printf("Accuracy on testing  data: %2.2f\n",
            accuracy(res_labels , test_labels));
+
+    printf("Prediction time: %4.4f\n", test_time);
 
     if (!console) {
         display_results<false>(test_images, res_labels, 20);

@@ -192,11 +192,22 @@ int ann_demo(bool console, int perc)
     // Train network
     timer::start();
     network.train(train_feats, train_target, 2.0, 3000, 1, true);
-    printf("Time taken to train: %4.2lf s\n", timer::stop());
+    af::sync();
+    double train_time = timer::stop();
 
     // Run the trained network and test accuracy.
     array train_output = network.predict(train_feats);
     array test_output  = network.predict(test_feats );
+
+
+    // Benchmark prediction
+    af::sync();
+    timer::start();
+    for (int i = 0; i < 100; i++) {
+        network.predict(test_feats);
+    }
+    af::sync();
+    double test_time = timer::stop() / 100;
 
     printf("\nTraining set:\n");
     printf("Accuracy on training data: %2.2f\n",
@@ -205,6 +216,9 @@ int ann_demo(bool console, int perc)
     printf("\nTest set:\n");
     printf("Accuracy on testing  data: %2.2f\n",
            accuracy(test_output , test_target ));
+
+    printf("Training time: %4.4lf s\n", train_time);
+    printf("Prediction time: %4.4lf s\n", test_time);
 
     if (!console) {
         // Get 20 random test images.
