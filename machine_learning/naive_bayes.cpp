@@ -54,16 +54,17 @@ array naive_bayes(int num_classes, const array &train_feats, const array &test_f
     return idx.as(f32);
 }
 
-void naive_bayes_demo(bool console)
+void naive_bayes_demo(bool console, int perc)
 {
     array train_images, train_labels;
     array test_images, test_labels;
     int num_train, num_test, num_classes;
 
     // Load mnist data
+    float frac = (float)(perc) / 100.0;
     setup_mnist<false>(&num_classes, &num_train, &num_test,
                        train_images, test_images,
-                       train_labels, test_labels);
+                       train_labels, test_labels, frac);
 
     int feature_length = train_images.elements() / num_train;
     array train_feats = moddims(train_images, feature_length, num_train);
@@ -87,14 +88,15 @@ void naive_bayes_demo(bool console)
 
 int main(int argc, char** argv)
 {
-    int device = argc > 1 ? atoi(argv[1]) : 0;
+    int device   = argc > 1 ? atoi(argv[1]) : 0;
     bool console = argc > 2 ? argv[2][0] == '-' : false;
+    int perc     = argc > 3 ? atoi(argv[3]) : 60;
 
     try {
 
         af::deviceset(device);
         af::info();
-        naive_bayes_demo(console);
+        naive_bayes_demo(console, perc);
 
     } catch (af::exception &ae) {
         std::cout << ae.what() << std::endl;

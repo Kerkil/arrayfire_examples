@@ -35,7 +35,7 @@ std::string classify(af::array arr, int k)
 template<bool expand_labels>
 static void setup_mnist(int *num_classes, int *num_train, int *num_test,
                         af::array &train_images, af::array &test_images,
-                        af::array &train_labels, af::array &test_labels)
+                        af::array &train_labels, af::array &test_labels, float frac)
 {
     std::vector<unsigned> idims;
     std::vector<float   > idata;
@@ -51,7 +51,7 @@ static void setup_mnist(int *num_classes, int *num_train, int *num_test,
     af::array labels = af::array(ldims[0], &ldata[0]);
 
     af::array R = af::randu(10000, 1);
-    af::array cond = R < 0.6;
+    af::array cond = R < std::min(frac, 0.8f);
     af::array train_indices = where( cond);
     af::array test_indices  = where(!cond);
 

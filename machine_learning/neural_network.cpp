@@ -157,7 +157,7 @@ double ann::train(const array &input, const array &target,
     return err;
 }
 
-int ann_demo(bool console)
+int ann_demo(bool console, int perc)
 {
     printf("** ArrayFire ANN Demo **\n\n");
 
@@ -165,8 +165,10 @@ int ann_demo(bool console)
     array train_target, test_target;
     int num_classes, num_train, num_test;
 
+    // Load mnist data
+    float frac = (float)(perc) / 100.0;
     setup_mnist<true>(&num_classes, &num_train, &num_test,
-                      train_images, test_images, train_target, test_target);
+                      train_images, test_images, train_target, test_target, frac);
 
     int feature_size = train_images.elements() / num_train;
 
@@ -215,14 +217,15 @@ int ann_demo(bool console)
 
 int main(int argc, char** argv)
 {
-    int device = argc > 1 ? atoi(argv[1]) : 0;
+    int device   = argc > 1 ? atoi(argv[1]) : 0;
     bool console = argc > 2 ? argv[2][0] == '-' : false;
+    int perc     = argc > 3 ? atoi(argv[3]) : 60;
 
     try {
 
         af::deviceset(device);
         af::info();
-        return ann_demo(console);
+        return ann_demo(console, perc);
 
     } catch (af::exception &ae) {
         std::cout << ae.what() << std::endl;
