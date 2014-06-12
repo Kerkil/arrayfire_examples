@@ -14,7 +14,8 @@ float accuracy(const array& predicted, const array& target)
     return 100 * count(predicted == target) / target.elements();
 }
 
-void naive_bayes_train(array &mu, array &sig2, const array &train_feats, const array &train_classes, int num_classes)
+void naive_bayes_train(array &mu, array &sig2, const array &train_feats,
+                       const array &train_classes, int num_classes)
 {
     int feat_len = train_feats.dims(0);
 
@@ -99,8 +100,8 @@ void naive_bayes_demo(bool console, int perc)
     array test_feats  = moddims(test_images , feature_length, num_test );
 
     // Preprocess
-    train_feats = train_feats + tile(min(train_feats, 1), 1, num_train);
-    test_feats  =  test_feats + tile(min(test_feats , 1), 1, num_test );
+    train_feats = train_feats;
+    test_feats  =  test_feats;
 
     // Get training parameters
     array mu, sig2;
