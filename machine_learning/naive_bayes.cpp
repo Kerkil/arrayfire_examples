@@ -14,14 +14,13 @@ float accuracy(const array& predicted, const array& target)
     return 100 * count(predicted == target) / target.elements();
 }
 
-array naive_bayes(int num_classes, const array &train_feats, const array &test_feats, const array &train_classes)
+void naive_bayes_train(array &mu, array &sig2, const array &train_feats, const array &train_classes, int num_classes)
 {
     int feat_len = train_feats.dims(0);
-    int num_test = test_feats.dims(1);
 
     // Get mean and variance from trianing data
-    array mu  = constant(0, feat_len, num_classes);
-    array sig2 = constant(0, feat_len, num_classes);
+    mu  = constant(0, feat_len, num_classes);
+    sig2 = constant(0, feat_len, num_classes);
     for (int ii = 0; ii < num_classes; ii++) {
         array idx = where(train_classes == ii);
         array train_feats_ii = train_feats(span, idx);
@@ -31,6 +30,14 @@ array naive_bayes(int num_classes, const array &train_feats, const array &test_f
         // Some pixels are always 0. Add a small variance.
         sig2(span,ii) = var(train_feats_ii, 0, 1) + 0.01;
     }
+
+    mu.eval();
+    sig2.eval();
+}
+
+array naive_bayes_predict(const array &mu, const array &sig2, const array &test_feats, int num_classes)
+{
+    int num_test = test_feats.dims(1);
 
     // Predict the probabilities for testing data
     // Using log of probabilities to reduce rounding errors
@@ -74,10 +81,15 @@ void naive_bayes_demo(bool console, int perc)
     train_feats = train_feats + tile(min(train_feats, 1), 1, num_train);
     test_feats  =  test_feats + tile(min(test_feats , 1), 1, num_test );
 
-    // Get the predicted results
-    array res_labels = naive_bayes(num_classes, train_feats, test_feats, train_labels);
+    // Get training parameters
+    array mu, sig2;
+    naive_bayes_train(mu, sig2, train_feats, train_labels, num_classes);
+
+    // Predict the classes
+    array res_labels = naive_bayes_predict(mu, sig2, test_feats, num_classes);
 
     // Results
+    printf("Trainng samples: %4d, Testing samples: %4d\n", num_train, num_test);
     printf("Accuracy on testing  data: %2.2f\n",
            accuracy(res_labels , test_labels));
 
