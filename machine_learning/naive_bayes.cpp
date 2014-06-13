@@ -99,10 +99,6 @@ void naive_bayes_demo(bool console, int perc)
     array train_feats = moddims(train_images, feature_length, num_train);
     array test_feats  = moddims(test_images , feature_length, num_test );
 
-    // Preprocess
-    train_feats = train_feats;
-    test_feats  =  test_feats;
-
     // Get training parameters
     array mu, sig2;
     naive_bayes_train(mu, sig2, train_feats, train_labels, num_classes);
