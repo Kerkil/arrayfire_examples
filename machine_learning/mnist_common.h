@@ -83,6 +83,7 @@ static void setup_mnist(int *num_classes, int *num_train, int *num_test,
 
 static af::array randidx(int num, int total)
 {
+    af_randu_setseed(0xDEADBEEF);
     af::array locs;
     do {
         locs = af::where(af::randu(total, 1) < float(num * 2) / total);
